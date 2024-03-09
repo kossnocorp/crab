@@ -30,10 +30,9 @@ fn main() {
 
     let package = read_package_json(&cwd).unwrap();
     let package_workspaces = get_package_workspaces(package);
-    let workspaces = list_workspaces(&cwd, package_workspaces.clone());
+    let workspaces = list_workspaces(&cwd, package_workspaces);
     let workspaces_with_package = list_workspaces_with_package(workspaces);
-    let dependant_workspaces =
-        list_dependant_workspaces(workspaces_with_package, package_name.clone());
+    let dependant_workspaces = list_dependant_workspaces(workspaces_with_package, &package_name);
 
     let dependant_workspaces_str: Vec<String> = dependant_workspaces
         .iter()
@@ -92,7 +91,7 @@ fn get_package_workspaces(package: serde_json::Value) -> Vec<String> {
 fn list_workspaces(cwd: &Path, patterns: Vec<String>) -> Vec<PathBuf> {
     let mut workspaces = Vec::new();
 
-    for pattern in &patterns {
+    for pattern in patterns {
         let cwd_pattern = cwd.join(pattern);
         let cwd_pattern_str = cwd_pattern.to_str().unwrap();
         // TODO: glob runs sequentially, so rewrite to use rayon
@@ -127,7 +126,7 @@ fn list_workspaces_with_package(workspaces: Vec<PathBuf>) -> Vec<(PathBuf, serde
 
 fn list_dependant_workspaces(
     workspaces_with_package: Vec<(PathBuf, serde_json::Value)>,
-    package_name: String,
+    package_name: &String,
 ) -> Vec<String> {
     let mut dependant_workspaces = Vec::new();
 
