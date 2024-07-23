@@ -28,13 +28,15 @@ export namespace Crab {
   > = {
     [Variant in RemainVariants]: (
       initial: Variants[Variant],
-      map: {
-        [Value in StringifyValue<Variants[Variant]>]?:
-          | string
-          | [string, ...Compound<Variants>[]]
-          | Compound<Variants>
-          | Compound<Variants>[];
-      }
+      map?:
+        | {
+            [Value in StringifyValue<Variants[Variant]>]?:
+              | string
+              | [string, ...Compound<Variants>[]]
+              | Compound<Variants>
+              | Compound<Variants>[];
+          }
+        | undefined
     ) => Exclude<RemainVariants, Variant> extends never
       ? Renderer<Variants>
       : Builder<Variants, Exclude<RemainVariants, Variant>>;

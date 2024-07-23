@@ -17,7 +17,7 @@ cn.var = (base) => {
       const props = args[0] || {};
 
       const variants = Object.entries(maps).flatMap(([name, [dflt, map]]) => {
-        const value = map[props[name] || dflt];
+        const value = map?.[props[name] || dflt];
         if (typeof value === "string" || !value) return value;
 
         const values = [typeof value[0] === "string" && value[0]];

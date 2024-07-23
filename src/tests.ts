@@ -171,5 +171,15 @@ describe("crab", () => {
         "text-gray-500 cursor-pointer hover:text-gray-600 extra-class"
       );
     });
+
+    it("allows to omit the variants", () => {
+      const iconCn = cn
+        .var<{ size: Size; color: Color; trigger: boolean }>("inline-flex")
+        .size("medium")
+        .color("main")
+        .trigger(false);
+      const className = iconCn();
+      expect(className).toBe("inline-flex");
+    });
   });
 });
