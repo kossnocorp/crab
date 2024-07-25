@@ -15,8 +15,8 @@ import { cn } from ".";
 
   type Color = "main" | "support" | "detail" | "brand";
 
-  const iconCn = cn
-    .var<{ size: Size; color: Color; trigger: boolean }>("inline-flex")
+  const iconCn = cn<{ size: Size; color: Color; trigger: boolean }>()
+    .base("inline-flex")
     .size("medium", {
       xsmall: "h-3",
       small: "h-4",

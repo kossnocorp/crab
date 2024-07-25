@@ -6,17 +6,24 @@ export namespace Crab {
    * Main factory function.
    */
   export interface Factory {
-    (...classNames: InlineClassName[]): string;
+    (className: InlineClassName, ...classNames: InlineClassName[]): string;
 
-    var: <Variants extends VariantsConstrain>(
-      base?: string | undefined
-    ) => Builder<Variants>;
+    <Variants extends VariantsConstrain>(): BaseBuilder<Variants>;
   }
 
   /**
    * Inline class name value.
    */
   export type InlineClassName = string | undefined | null | false;
+
+  /**
+   * Base builder object. It includes the base method that allows to define the
+   * base class name.
+   */
+  export type BaseBuilder<Variants extends VariantsConstrain> =
+    Builder<Variants> & {
+      base: (base: string) => Builder<Variants>;
+    };
 
   /**
    * Builder object, which is returned by the factory function. It allows to

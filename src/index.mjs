@@ -1,14 +1,14 @@
 export function cn(...classNames) {
-  return classNames.filter(Boolean).join(" ");
-}
+  if (classNames.length) return classNames.filter(Boolean).join(" ");
 
-cn.var = (base) => {
   const maps = {};
+  let base;
 
   const proxy = new Proxy(() => {}, {
     get(_, name) {
-      return (dflt, map) => {
-        maps[name] = [dflt, map];
+      return (...args) => {
+        if (name === "base") base = args[0];
+        else maps[name] = args;
         return proxy;
       };
     },
@@ -36,4 +36,4 @@ cn.var = (base) => {
   });
 
   return proxy;
-};
+}

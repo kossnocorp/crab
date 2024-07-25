@@ -20,8 +20,8 @@ describe("crab", () => {
 
     type Color = "main" | "support" | "detail" | "brand";
 
-    const iconCn = cn
-      .var<{ size: Size; color: Color; trigger: boolean }>("inline-flex")
+    const iconCn = cn<{ size: Size; color: Color; trigger: boolean }>()
+      .base("inline-flex")
       .size("medium", {
         xsmall: "h-3",
         small: "h-4",
@@ -66,8 +66,8 @@ describe("crab", () => {
     });
 
     it("allows to omit the compound class names", () => {
-      const iconCn = cn
-        .var<{ color: Color; trigger: boolean }>("inline-flex")
+      const iconCn = cn<{ color: Color; trigger: boolean }>()
+        .base("inline-flex")
         .color("main", {
           main: "text-gray-800",
           support: "text-gray-500",
@@ -92,8 +92,8 @@ describe("crab", () => {
     });
 
     it("uses default values for compound class names", () => {
-      const iconCn = cn
-        .var<{ color: Color; trigger: boolean }>("inline-flex")
+      const iconCn = cn<{ color: Color; trigger: boolean }>()
+        .base("inline-flex")
         .color("main", {
           main: "text-gray-800",
           support: "text-gray-500",
@@ -118,8 +118,7 @@ describe("crab", () => {
     });
 
     it("allows to omit the base class", () => {
-      const iconCn = cn
-        .var<{ color: Color; trigger: boolean }>()
+      const iconCn = cn<{ color: Color; trigger: boolean }>()
         .color("main", {
           main: "text-gray-800",
           support: "text-gray-500",
@@ -145,8 +144,7 @@ describe("crab", () => {
     });
 
     it("allows to add extra class names", () => {
-      const iconCn = cn
-        .var<{ color: Color; trigger: boolean }>()
+      const iconCn = cn<{ color: Color; trigger: boolean }>()
         .color("main", {
           main: "text-gray-800",
           support: "text-gray-500",
@@ -173,8 +171,8 @@ describe("crab", () => {
     });
 
     it("allows to omit the variants", () => {
-      const iconCn = cn
-        .var<{ size: Size; color: Color; trigger: boolean }>("inline-flex")
+      const iconCn = cn<{ size: Size; color: Color; trigger: boolean }>()
+        .base("inline-flex")
         .size("medium")
         .color("main")
         .trigger(false);
