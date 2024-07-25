@@ -4,9 +4,23 @@ export function cn(...classNames) {
   const maps = {};
   let base;
 
+  const groupProxy = new Proxy(cn, {
+    get(_, name) {
+      if (name === "base") return cn().base;
+    },
+  });
+
   const proxy = new Proxy(() => {}, {
     get(_, name) {
       return (...args) => {
+        if (name === "group") {
+          const maps = args[0](groupProxy);
+          return (props) =>
+            Object.fromEntries(
+              Object.entries(maps).map(([key, value]) => [key, value(props)])
+            );
+        }
+
         if (name === "base") base = args[0];
         else maps[name] = args;
         return proxy;

@@ -8,8 +8,17 @@ export namespace Crab {
   export interface Factory {
     (className: InlineClassName, ...classNames: InlineClassName[]): string;
 
-    <Variants extends VariantsConstrain>(): BaseBuilder<Variants>;
+    <Variants extends VariantsConstraint>(): BaseBuilder<Variants>;
   }
+
+  /**
+   * Infers props type for the renderer.
+   */
+  export type InferProps<
+    Renderer extends Crab.Renderer<any> | GroupRenderer<any>
+  > = Renderer extends (props?: infer Variants) => any
+    ? Partial<Variants>
+    : never;
 
   /**
    * Inline class name value.
@@ -18,11 +27,16 @@ export namespace Crab {
 
   /**
    * Base builder object. It includes the base method that allows to define the
-   * base class name.
+   * base class name and the group method that allows to define the class name
+   * groups.
    */
-  export type BaseBuilder<Variants extends VariantsConstrain> =
+  export type BaseBuilder<Variants extends VariantsConstraint> =
     Builder<Variants> & {
       base: (base: string) => Builder<Variants>;
+
+      group: <Group extends GroupConstraint>(
+        factory: GroupFactory<Variants, Group>
+      ) => GroupRenderer<Group>;
     };
 
   /**
@@ -30,7 +44,7 @@ export namespace Crab {
    * define the class name variants.
    */
   export type Builder<
-    Variants extends VariantsConstrain,
+    Variants extends VariantsConstraint,
     RemainVariants extends keyof Variants = keyof Variants
   > = {
     [Variant in RemainVariants]: (
@@ -52,14 +66,14 @@ export namespace Crab {
   /**
    * Function that renders class names.
    */
-  export type Renderer<Variants extends VariantsConstrain> = (
+  export type Renderer<Variants extends VariantsConstraint> = (
     props?: RendererProps<Variants>
   ) => string;
 
   /**
    * Renderer function props.
    */
-  export type RendererProps<Variants extends VariantsConstrain> =
+  export type RendererProps<Variants extends VariantsConstraint> =
     Partial<Variants> & {
       className?: string;
     };
@@ -67,25 +81,25 @@ export namespace Crab {
   /**
    * Compound definition
    */
-  export type Compound<Variants extends VariantsConstrain> = [
+  export type Compound<Variants extends VariantsConstraint> = [
     combination: { [Variant in keyof Variants]?: Variants[Variant] },
     classNames: string
   ];
 
   /**
-   * Variants map constrain.
+   * Variants map constraint.
    */
-  export type VariantsConstrain = Record<string, VariantValueConstrain>;
+  export type VariantsConstraint = Record<string, VariantValueConstraint>;
 
   /**
-   * Variant value constrain.
+   * Variant value constraint.
    */
-  export type VariantValueConstrain = string | number | boolean;
+  export type VariantValueConstraint = string | number | boolean;
 
   /**
    * Stringifies variant value.
    */
-  export type StringifyValue<Value extends VariantValueConstrain> =
+  export type StringifyValue<Value extends VariantValueConstraint> =
     Value extends string
       ? Value
       : Value extends number
@@ -95,4 +109,61 @@ export namespace Crab {
         ? "true"
         : "false"
       : never;
+
+  /**
+   * Groups factory function.
+   */
+  export interface GroupFactory<
+    GroupVartiants extends VariantsConstraint,
+    Group extends GroupConstraint
+  > {
+    (helper: GroupHelper<GroupVartiants>): Group;
+  }
+
+  /**
+   * Groups helper object.
+   */
+  export interface GroupHelper<GroupVartiants extends VariantsConstraint> {
+    <Variants>(): BaseBuilder<GroupVartiants & Variants>;
+
+    base: (base: string) => Builder<GroupVartiants>;
+  }
+
+  /**
+   * Group renderer.
+   */
+  export type GroupRenderer<Group extends GroupConstraint> = (
+    props?: GroupProps<Group>
+  ) => GroupRendered<Group>;
+
+  /**
+   * Group props.
+   */
+  export type GroupProps<Group extends GroupConstraint> = UnionToIntersection<
+    Group[keyof Group] extends Renderer<infer Variants>
+      ? Partial<Variants>
+      : never
+  >;
+
+  /**
+   * Group rendered object.
+   */
+  export type GroupRendered<Group extends GroupConstraint> = {
+    [Key in keyof Group]: string;
+  };
+
+  /**
+   * Group constraint.
+   */
+  export type GroupConstraint = Record<string, Renderer<VariantsConstraint>>;
+
+  /**
+   * Converts union to an intersection.
+   * See: https://stackoverflow.com/a/50375286/75284
+   */
+  export type UnionToIntersection<Union> = (
+    Union extends any ? (x: Union) => void : never
+  ) extends (x: infer X) => void
+    ? X
+    : never;
 }

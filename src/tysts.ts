@@ -1,4 +1,4 @@
-import { cn } from ".";
+import { cn, Crab } from ".";
 
 // Inline class names
 {
@@ -42,4 +42,63 @@ import { cn } from ".";
   typeof className satisfies string;
   // @ts-expect-error
   className.notAny;
+
+  // Props inferring
+  type Props = Crab.InferProps<typeof iconCn>;
+  assertType<
+    TypeEqual<Props, { size?: Size; color?: Color; trigger?: boolean }>
+  >(true);
 }
+
+// Class names groups
+{
+  type Size = "xsmall" | "small" | "medium" | "large" | "xlarge";
+
+  type Color = "primary" | "secondary";
+
+  const fieldCng = cn<{ size: Size }>().group(($) => ({
+    label: $.base(
+      "leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex justify-between"
+    ).size("medium", {
+      xsmall: "gap-2",
+      small: "gap-2",
+      medium: "gap-3",
+      large: "gap-3",
+      xlarge: "gap-4",
+    }),
+
+    content: $<{ color: Color }>()
+      .size("medium", {
+        xsmall: "text-xs",
+        small: "text-xs",
+        medium: "text-sm",
+        xlarge: "text-lg",
+      })
+      .color("primary", {
+        primary: "text-gray-700 font-semibold",
+        secondary: "text-gray-500",
+      }),
+  }));
+
+  const classNameGroup = fieldCng({ size: "medium", color: "primary" });
+
+  typeof classNameGroup.label satisfies string;
+  // @ts-expect-error
+  classNameGroup.label.notAny;
+
+  typeof classNameGroup.content satisfies string;
+  // @ts-expect-error
+  classNameGroup.content.notAny;
+
+  // Props inferring
+  type Props = Crab.InferProps<typeof fieldCng>;
+  assertType<TypeEqual<Props, { size?: Size; color?: Color }>>(true);
+}
+
+export function assertType<Type>(_value: Type) {}
+
+export type TypeEqual<T, U> = Exclude<T, U> extends never
+  ? Exclude<U, T> extends never
+    ? true
+    : false
+  : false;

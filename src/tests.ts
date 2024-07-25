@@ -180,4 +180,44 @@ describe("crab", () => {
       expect(className).toBe("inline-flex");
     });
   });
+
+  describe("groups", () => {
+    type Size = "xsmall" | "small" | "medium" | "large" | "xlarge";
+
+    type Color = "primary" | "secondary";
+
+    const fieldCng = cn<{ size: Size }>().group(($) => ({
+      label: $.base(
+        "leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex justify-between"
+      ).size("medium", {
+        xsmall: "gap-2",
+        small: "gap-2",
+        medium: "gap-3",
+        large: "gap-3",
+        xlarge: "gap-4",
+      }),
+
+      content: $<{ color: Color }>()
+        .size("medium", {
+          xsmall: "text-xs",
+          small: "text-xs",
+          medium: "text-sm",
+          xlarge: "text-lg",
+        })
+        .color("primary", {
+          primary: "text-gray-700 font-semibold",
+          secondary: "text-gray-500",
+        }),
+    }));
+
+    it("allows to compile grouped class names", () => {
+      const classNameGroup = fieldCng({ size: "medium", color: "primary" });
+      expect(classNameGroup.label).toBe(
+        "leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex justify-between gap-3"
+      );
+      expect(classNameGroup.content).toBe(
+        "text-sm text-gray-700 font-semibold"
+      );
+    });
+  });
 });
