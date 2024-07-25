@@ -17,7 +17,7 @@ export namespace Crab {
   export type InferProps<
     Renderer extends Crab.Renderer<any> | GroupRenderer<any>
   > = Renderer extends (props?: infer Variants) => any
-    ? Partial<Variants>
+    ? Omit<Variants, "className">
     : never;
 
   /**
