@@ -1,4 +1,4 @@
-import { cn, Crab } from ".";
+import { cn } from ".";
 
 // Inline class names
 {
@@ -44,7 +44,7 @@ import { cn, Crab } from ".";
   className.notAny;
 
   // Props inferring
-  type Props = Crab.InferProps<typeof iconCn>;
+  type Props = cn.Props<typeof iconCn>;
   assertType<
     TypeEqual<Props, { size?: Size; color?: Color; trigger?: boolean }>
   >(true);
@@ -91,7 +91,7 @@ import { cn, Crab } from ".";
   classNameGroup.content.notAny;
 
   // Props inferring
-  type Props = Crab.InferProps<typeof fieldCng>;
+  type Props = cn.Props<typeof fieldCng>;
   assertType<TypeEqual<Props, { size?: Size; color?: Color }>>(true);
 }
 
