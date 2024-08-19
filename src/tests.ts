@@ -117,6 +117,90 @@ describe("crab", () => {
       );
     });
 
+    it("allows to use compound shortcut with default value", () => {
+      const iconCn = cn<{ color: Color; trigger: boolean }>()
+        .base("inline-flex")
+        .color("main", {
+          main: "text-gray-800",
+          support: "text-gray-500",
+          detail: "text-gray-400",
+          brand: "text-lime-500",
+        })
+        .trigger(false, {
+          true: [
+            "cursor-pointer",
+            {
+              color: {
+                main: "hover:text-gray-900",
+                support: "hover:text-gray-600",
+                detail: "hover:text-gray-500",
+              },
+            },
+          ],
+        });
+
+      const className = iconCn({
+        trigger: true,
+      });
+      expect(className).toBe(
+        "inline-flex text-gray-800 cursor-pointer hover:text-gray-900"
+      );
+    });
+
+    it("allows to use compound shortcut", () => {
+      const iconCn = cn<{ color: Color; trigger: boolean }>()
+        .base("inline-flex")
+        .color("main", {
+          main: "text-gray-800",
+          support: "text-gray-500",
+          detail: "text-gray-400",
+          brand: "text-lime-500",
+        })
+        .trigger(false, {
+          true: [
+            {
+              color: {
+                main: "hover:text-gray-900",
+                support: "hover:text-gray-600",
+                detail: "hover:text-gray-500",
+              },
+            },
+          ],
+        });
+
+      const className = iconCn({
+        color: "support",
+        trigger: true,
+      });
+      expect(className).toBe("inline-flex text-gray-500 hover:text-gray-600");
+    });
+
+    it("allows to use compound shortcut without wrapper array", () => {
+      const iconCn = cn<{ color: Color; trigger: boolean }>()
+        .base("inline-flex")
+        .color("main", {
+          main: "text-gray-800",
+          support: "text-gray-500",
+          detail: "text-gray-400",
+          brand: "text-lime-500",
+        })
+        .trigger(false, {
+          true: {
+            color: {
+              main: "hover:text-gray-900",
+              support: "hover:text-gray-600",
+              detail: "hover:text-gray-500",
+            },
+          },
+        });
+
+      const className = iconCn({
+        color: "support",
+        trigger: true,
+      });
+      expect(className).toBe("inline-flex text-gray-500 hover:text-gray-600");
+    });
+
     it("allows to omit the base class", () => {
       const iconCn = cn<{ color: Color; trigger: boolean }>()
         .color("main", {

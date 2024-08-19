@@ -50,6 +50,66 @@ import { cn } from ".";
   >(true);
 }
 
+// Variant class names shortcut
+{
+  type Size = "xsmall" | "small" | "medium" | "large" | "xlarge";
+
+  type Color = "main" | "support" | "detail" | "brand";
+
+  const iconCn = cn<{ size: Size; color: Color; trigger: boolean }>()
+    .base("inline-flex")
+    .size("medium", {
+      xsmall: "h-3",
+      small: "h-4",
+      medium: "h-5",
+      large: "h-6",
+      xlarge: "h-9",
+    })
+    .color("main", {
+      main: "text-gray-800",
+      support: "text-gray-500",
+      detail: "text-gray-400",
+      brand: "text-lime-500",
+    })
+    .trigger(false, {
+      true: [
+        {
+          color: {
+            main: "hover:text-gray-900",
+            support: "hover:text-gray-600",
+            detail: "hover:text-gray-500",
+          },
+        },
+      ],
+    });
+
+  // Even shorter API
+  cn<{ size: Size; color: Color; trigger: boolean }>()
+    .base("inline-flex")
+    .size("medium")
+    .color("main")
+    .trigger(false, {
+      true: {
+        color: {
+          main: "hover:text-gray-900",
+          support: "hover:text-gray-600",
+          detail: "hover:text-gray-500",
+        },
+      },
+    });
+
+  const className = iconCn({ size: "large" });
+  typeof className satisfies string;
+  // @ts-expect-error
+  className.notAny;
+
+  // Props inferring
+  type Props = cn.Props<typeof iconCn>;
+  assertType<
+    TypeEqual<Props, { size?: Size; color?: Color; trigger?: boolean }>
+  >(true);
+}
+
 // Class names groups
 {
   type Size = "xsmall" | "small" | "medium" | "large" | "xlarge";

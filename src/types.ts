@@ -81,10 +81,26 @@ export namespace Crab {
   /**
    * Compound definition
    */
-  export type Compound<Variants extends VariantsConstraint> = [
+  export type Compound<Variants extends VariantsConstraint> =
+    | CompoundTuple<Variants>
+    | CompoundMap<Variants>;
+
+  /**
+   * Compound tuple definition
+   */
+  export type CompoundTuple<Variants extends VariantsConstraint> = [
     combination: { [Variant in keyof Variants]?: Variants[Variant] },
     classNames: string
   ];
+
+  /**
+   * Compound map definition
+   */
+  export type CompoundMap<Variants extends VariantsConstraint> = {
+    [Key in keyof Variants]?: {
+      [Value in StringifyValue<Variants[Key]>]?: string;
+    };
+  };
 
   /**
    * Variants map constraint.

@@ -31,16 +31,30 @@ export function cn(...classNames) {
       const props = args[0] || {};
 
       const variants = Object.entries(maps).flatMap(([name, [dflt, map]]) => {
-        const value = map?.[props[name] || dflt];
+        let value = map?.[props[name] || dflt];
         if (typeof value === "string" || !value) return value;
+        // Normalize compound shortcut to array
+        value = [].concat(value);
 
         const values = [typeof value[0] === "string" && value[0]];
         value.forEach((vars) => {
           if (typeof vars === "string") return;
-          let matches = Object.entries(vars[0]).every(
-            ([key, val]) => (props[key] || maps[key][0]) === val
+
+          if (Array.isArray(vars)) {
+            let matches = Object.entries(vars[0]).every(
+              ([prop, val]) => (props[prop] || maps[prop][0]) === val
+            );
+            if (matches) values.push(vars[1]);
+            return;
+          }
+
+          Object.entries(vars).forEach(([prop, map]) =>
+            Object.entries(map).forEach(
+              ([val, classNames]) =>
+                (props[prop] || maps[prop][0]) === val &&
+                values.push(classNames)
+            )
           );
-          if (matches) values.push(vars[1]);
         });
         return values;
       });
