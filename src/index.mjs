@@ -51,7 +51,7 @@ export function cn(...classNames) {
           Object.entries(vars).forEach(([prop, map]) =>
             Object.entries(map).forEach(
               ([val, classNames]) =>
-                (props[prop] || maps[prop][0]) === val &&
+                String(props[prop] || maps[prop][0]) === val &&
                 values.push(classNames)
             )
           );

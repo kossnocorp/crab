@@ -263,6 +263,43 @@ describe("crab", () => {
       const className = iconCn();
       expect(className).toBe("inline-flex");
     });
+
+    it("compound shortcut API works with boolean props", () => {
+      type ButtonColor = "default" | "action";
+
+      const buttonCn = cn<{
+        color: ButtonColor;
+        transparent: boolean;
+      }>()
+        .color("default", {
+          default: {
+            transparent: {
+              false: "bg-gray-500 text-white hover:bg-gray-400",
+              true: "text-gray-700 hover:bg-gray-50 border-gray-300 hover:border-gray-400",
+            },
+          },
+          action: {
+            transparent: {
+              false: "bg-gray-700 text-white hover:bg-gray-600",
+              true: "text-gray-800 hover:bg-gray-50 border-gray-400 hover:border-gray-500",
+            },
+          },
+        })
+        .transparent(false, {
+          true: "bg-transparent border shadow-none",
+        });
+
+      expect(buttonCn()).toBe("bg-gray-500 text-white hover:bg-gray-400");
+      expect(buttonCn({ color: "action" })).toBe(
+        "bg-gray-700 text-white hover:bg-gray-600"
+      );
+      expect(buttonCn({ transparent: true })).toBe(
+        "text-gray-700 hover:bg-gray-50 border-gray-300 hover:border-gray-400 bg-transparent border shadow-none"
+      );
+      expect(buttonCn({ color: "action", transparent: true })).toBe(
+        "text-gray-800 hover:bg-gray-50 border-gray-400 hover:border-gray-500 bg-transparent border shadow-none"
+      );
+    });
   });
 
   describe("groups", () => {
