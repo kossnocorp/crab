@@ -46,8 +46,18 @@ import { cn } from ".";
   // Props inferring
   type Props = cn.Props<typeof iconCn>;
   assertType<
-    TypeEqual<Props, { size?: Size; color?: Color; trigger?: boolean }>
+    TypeEqual<
+      Props,
+      {
+        size?: Size | undefined;
+        color?: Color | undefined;
+        trigger?: boolean | undefined;
+      }
+    >
   >(true);
+
+  // It allows passing undefined
+  iconCn({ size: undefined });
 }
 
 // Variant class names shortcut
@@ -106,7 +116,14 @@ import { cn } from ".";
   // Props inferring
   type Props = cn.Props<typeof iconCn>;
   assertType<
-    TypeEqual<Props, { size?: Size; color?: Color; trigger?: boolean }>
+    TypeEqual<
+      Props,
+      {
+        size?: Size | undefined;
+        color?: Color | undefined;
+        trigger?: boolean | undefined;
+      }
+    >
   >(true);
 }
 

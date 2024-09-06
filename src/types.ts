@@ -74,7 +74,7 @@ export namespace Crab {
    * Renderer function props.
    */
   export type RendererProps<Variants extends VariantsConstraint> =
-    Partial<Variants> & {
+    PartialUndefined<Variants> & {
       className?: string;
     };
 
@@ -182,4 +182,11 @@ export namespace Crab {
   ) extends (x: infer X) => void
     ? X
     : never;
+
+  /**
+   * Partial with undefined as acceptable values.
+   */
+  export type PartialUndefined<Type> = {
+    [Key in keyof Type]?: Type[Key] | undefined;
+  };
 }
