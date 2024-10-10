@@ -33,7 +33,12 @@ export function cn(...classNames) {
       const variants = Object.entries(maps).flatMap(([name, [dflt, map]]) => {
         let value = map?.[props[name] || dflt];
         if (typeof value === "string" || !value) return value;
-        // Normalize compound shortcut to array
+
+        // Normalize compound shortcuts like [{ truncate: true }, "truncate"]
+        if (typeof value?.[0] === "object" && typeof value?.[1] === "string")
+          value = [value];
+
+        // Normalize object compound shortcut to array
         value = [].concat(value);
 
         const values = [typeof value[0] === "string" && value[0]];

@@ -300,6 +300,26 @@ describe("crab", () => {
         "text-gray-800 hover:bg-gray-50 border-gray-400 hover:border-gray-500 bg-transparent border shadow-none"
       );
     });
+
+    it("normalizes compound variant arrays", () => {
+      const truncateCn = cn<{ clamp: boolean | 1 | 2; truncate: boolean }>()
+        .truncate(false)
+        .clamp(false, {
+          true: "line-clamp-1 overflow-hidden text-ellipsis",
+          1: "line-clamp-1 overflow-hidden text-ellipsis",
+          2: "line-clamp-2 overflow-hidden text-ellipsis",
+          false: [{ truncate: true }, "truncate"],
+        });
+
+      expect(truncateCn()).toBe("");
+      expect(truncateCn({ truncate: true })).toBe("truncate");
+      expect(truncateCn({ truncate: true, clamp: 1 })).toBe(
+        "line-clamp-1 overflow-hidden text-ellipsis"
+      );
+      expect(truncateCn({ truncate: true, clamp: 2 })).toBe(
+        "line-clamp-2 overflow-hidden text-ellipsis"
+      );
+    });
   });
 
   describe("groups", () => {
