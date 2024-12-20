@@ -60,6 +60,14 @@ import { cn } from ".";
   iconCn({ size: undefined });
 }
 
+// No variants class name
+{
+  const inlineFlex = cn().base("inline-flex");
+  inlineFlex({ className: "text-gray-800" });
+  // @ts-expect-error
+  inlineFlex.notAny;
+}
+
 // Variant class names shortcut
 {
   type Size = "xsmall" | "small" | "medium" | "large" | "xlarge";

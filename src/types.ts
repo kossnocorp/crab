@@ -8,7 +8,9 @@ export namespace Crab {
   export interface Factory {
     (className: InlineClassName, ...classNames: InlineClassName[]): string;
 
-    <Variants extends VariantsConstraint>(): BaseBuilder<Variants>;
+    <
+      Variants extends VariantsConstraint | undefined = undefined
+    >(): BaseBuilder<Variants>;
   }
 
   /**
@@ -30,7 +32,7 @@ export namespace Crab {
    * base class name and the group method that allows to define the class name
    * groups.
    */
-  export type BaseBuilder<Variants extends VariantsConstraint> =
+  export type BaseBuilder<Variants extends VariantsConstraint | undefined> =
     Builder<Variants> & {
       base: (base: string) => Builder<Variants>;
 
@@ -44,37 +46,39 @@ export namespace Crab {
    * define the class name variants.
    */
   export type Builder<
-    Variants extends VariantsConstraint,
+    Variants extends VariantsConstraint | undefined,
     RemainVariants extends keyof Variants = keyof Variants
-  > = {
-    [Variant in RemainVariants]: (
-      initial: Variants[Variant],
-      map?:
-        | {
-            [Value in StringifyValue<Variants[Variant]>]?:
-              | string
-              | [string, ...Compound<Variants>[]]
-              | Compound<Variants>
-              | Compound<Variants>[];
-          }
-        | undefined
-    ) => Exclude<RemainVariants, Variant> extends never
-      ? Renderer<Variants>
-      : Builder<Variants, Exclude<RemainVariants, Variant>>;
-  };
+  > = Variants extends VariantsConstraint
+    ? {
+        [Variant in RemainVariants]: (
+          initial: Variants[Variant],
+          map?:
+            | {
+                [Value in StringifyValue<Variants[Variant]>]?:
+                  | string
+                  | [string, ...Compound<Variants>[]]
+                  | Compound<Variants>
+                  | Compound<Variants>[];
+              }
+            | undefined
+        ) => Exclude<RemainVariants, Variant> extends never
+          ? Renderer<Variants>
+          : Builder<Variants, Exclude<RemainVariants, Variant>>;
+      }
+    : Renderer<Variants>;
 
   /**
    * Function that renders class names.
    */
-  export type Renderer<Variants extends VariantsConstraint> = (
+  export type Renderer<Variants extends VariantsConstraint | undefined> = (
     props?: RendererProps<Variants>
   ) => string;
 
   /**
    * Renderer function props.
    */
-  export type RendererProps<Variants extends VariantsConstraint> =
-    PartialUndefined<Variants> & {
+  export type RendererProps<Variants extends VariantsConstraint | undefined> =
+    (undefined extends Variants ? {} : PartialUndefined<Variants>) & {
       className?: string;
     };
 
@@ -130,7 +134,7 @@ export namespace Crab {
    * Groups factory function.
    */
   export interface GroupFactory<
-    GroupVartiants extends VariantsConstraint,
+    GroupVartiants extends VariantsConstraint | undefined,
     Group extends GroupConstraint
   > {
     (helper: GroupHelper<GroupVartiants>): Group;
@@ -139,7 +143,9 @@ export namespace Crab {
   /**
    * Groups helper object.
    */
-  export interface GroupHelper<GroupVartiants extends VariantsConstraint> {
+  export interface GroupHelper<
+    GroupVartiants extends VariantsConstraint | undefined
+  > {
     <Variants>(): BaseBuilder<GroupVartiants & Variants>;
 
     base: (base: string) => Builder<GroupVartiants>;
