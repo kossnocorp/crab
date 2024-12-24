@@ -36,7 +36,7 @@ export namespace Crab {
     Builder<Variants> & {
       base: (base: string) => Builder<Variants>;
 
-      group: <Group extends GroupConstraint>(
+      group: <Group extends GroupConstraint | undefined>(
         factory: GroupFactory<Variants, Group>
       ) => GroupRenderer<Group>;
     };
@@ -135,7 +135,7 @@ export namespace Crab {
    */
   export interface GroupFactory<
     GroupVartiants extends VariantsConstraint | undefined,
-    Group extends GroupConstraint
+    Group extends GroupConstraint | undefined
   > {
     (helper: GroupHelper<GroupVartiants>): Group;
   }
@@ -146,7 +146,9 @@ export namespace Crab {
   export interface GroupHelper<
     GroupVartiants extends VariantsConstraint | undefined
   > {
-    <Variants>(): BaseBuilder<GroupVartiants & Variants>;
+    <Variants>(): BaseBuilder<
+      (GroupVartiants extends undefined ? {} : GroupVartiants) & Variants
+    >;
 
     base: (base: string) => Builder<GroupVartiants>;
   }
@@ -154,23 +156,24 @@ export namespace Crab {
   /**
    * Group renderer.
    */
-  export type GroupRenderer<Group extends GroupConstraint> = (
+  export type GroupRenderer<Group extends GroupConstraint | undefined> = (
     props?: GroupProps<Group>
   ) => GroupRendered<Group>;
 
   /**
    * Group props.
    */
-  export type GroupProps<Group extends GroupConstraint> = UnionToIntersection<
-    Group[keyof Group] extends Renderer<infer Variants>
-      ? Partial<Variants>
-      : never
-  >;
+  export type GroupProps<Group extends GroupConstraint | undefined> =
+    UnionToIntersection<
+      Group[keyof Group] extends Renderer<infer Variants>
+        ? Partial<Variants>
+        : never
+    >;
 
   /**
    * Group rendered object.
    */
-  export type GroupRendered<Group extends GroupConstraint> = {
+  export type GroupRendered<Group extends GroupConstraint | undefined> = {
     [Key in keyof Group]: string;
   };
 
