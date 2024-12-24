@@ -179,6 +179,7 @@ import { cn } from ".";
   // Props inferring
   type Props = cn.Props<typeof fieldCng>;
   assertType<TypeEqual<Props, { size?: Size; color?: Color }>>(true);
+  assertType<TypeEqual<keyof Props, "size" | "color">>(true);
 }
 
 // Group without shared variants
@@ -200,18 +201,12 @@ import { cn } from ".";
         xlarge: "gap-4",
       }),
 
-    content: $<{ size: Size; color: Color }>()
-      .base("font-medium")
-      .size("medium", {
-        xsmall: "text-xs",
-        small: "text-xs",
-        medium: "text-sm",
-        xlarge: "text-lg",
-      })
-      .color("primary", {
-        primary: "text-gray-700 font-semibold",
-        secondary: "text-gray-500",
-      }),
+    description: $.base(""),
+
+    content: $<{ color: Color }>().base("font-medium").color("primary", {
+      primary: "text-gray-700 font-semibold",
+      secondary: "text-gray-500",
+    }),
   }));
 
   const classNameGroup = fieldCng({ size: "medium", color: "primary" });
@@ -227,6 +222,7 @@ import { cn } from ".";
   // Props inferring
   type Props = cn.Props<typeof fieldCng>;
   assertType<TypeEqual<Props, { size?: Size; color?: Color }>>(true);
+  assertType<TypeEqual<keyof Props, "size" | "color">>(true);
 }
 
 export function assertType<Type>(_value: Type) {}
