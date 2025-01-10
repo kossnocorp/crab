@@ -178,8 +178,19 @@ import { cn } from ".";
 
   // Props inferring
   type Props = cn.Props<typeof fieldCng>;
-  assertType<TypeEqual<Props, { size?: Size; color?: Color }>>(true);
+  assertType<
+    TypeEqual<
+      Props,
+      {
+        size?: Size | undefined;
+        color?: Color | undefined;
+      }
+    >
+  >(true);
   assertType<TypeEqual<keyof Props, "size" | "color">>(true);
+
+  // It allows passing undefined
+  fieldCng({ size: undefined });
 }
 
 // Group without shared variants
@@ -221,8 +232,13 @@ import { cn } from ".";
 
   // Props inferring
   type Props = cn.Props<typeof fieldCng>;
-  assertType<TypeEqual<Props, { size?: Size; color?: Color }>>(true);
+  assertType<
+    TypeEqual<Props, { size?: Size | undefined; color?: Color | undefined }>
+  >(true);
   assertType<TypeEqual<keyof Props, "size" | "color">>(true);
+
+  // It allows passing undefined
+  fieldCng({ size: undefined });
 }
 
 export function assertType<Type>(_value: Type) {}

@@ -166,9 +166,9 @@ export namespace Crab {
   export type GroupProps<Group extends GroupConstraint> = UnionToIntersection<
     {
       [Key in keyof Group]: Group[Key] extends Renderer<infer Variants>
-        ? Variants extends undefined
+        ? undefined extends Variants
           ? {}
-          : Partial<Variants>
+          : PartialUndefined<Variants>
         : never;
     }[keyof Group]
   >;
