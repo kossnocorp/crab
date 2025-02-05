@@ -15,7 +15,12 @@ import { cn } from ".";
 
   type Color = "main" | "support" | "detail" | "brand";
 
-  const iconCn = cn<{ size: Size; color: Color; trigger: boolean }>()
+  const iconCn = cn<{
+    size: Size;
+    color: Color;
+    trigger: boolean;
+    flags: number;
+  }>()
     .base("inline-flex")
     .size("medium", {
       xsmall: "h-3",
@@ -36,6 +41,10 @@ import { cn } from ".";
         [{ color: "support" }, "hover:text-gray-600"],
         [{ color: "detail" }, "hover:text-gray-500"],
       ],
+    })
+    .flags(0, {
+      [2 ** 0]: "flag-1",
+      [(2 ** 0) | (2 ** 1)]: [{ color: "main" }, "flag-2"],
     });
 
   const className = iconCn({ size: "large" });

@@ -120,10 +120,8 @@ export namespace Crab {
    * Stringifies variant value.
    */
   export type StringifyValue<Value extends VariantValueConstraint> =
-    Value extends string
+    Value extends string | number
       ? Value
-      : Value extends number
-      ? `${Value}`
       : Value extends boolean
       ? true extends Value
         ? "true"
