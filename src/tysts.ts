@@ -250,6 +250,17 @@ import { cn } from ".";
   fieldCng({ size: undefined });
 }
 
+// className prop
+{
+  const className = cn().base("inline-flex")({ className: "text-gray-800" });
+  className satisfies string;
+  // @ts-expect-error
+  className.notAny;
+
+  // Allows passing undefined
+  cn().base("inline-flex")({ className: undefined });
+}
+
 export function assertType<Type>(_value: Type) {}
 
 export type TypeEqual<T, U> = Exclude<T, U> extends never

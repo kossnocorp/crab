@@ -79,7 +79,7 @@ export namespace Crab {
    */
   export type RendererProps<Variants extends VariantsConstraint | undefined> =
     (undefined extends Variants ? {} : PartialUndefined<Variants>) & {
-      className?: string;
+      className?: string | undefined;
     };
 
   /**
